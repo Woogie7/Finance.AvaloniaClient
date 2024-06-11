@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance.AvaloniaClient", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance.AvaloniaClient.Desktop", "Finance.AvaloniaClient.Desktop\Finance.AvaloniaClient.Desktop.csproj", "{131464AB-4638-42B2-9D0C-06416C429707}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance.Application", "..\Finance\Finacne.Application\Finance.Application.csproj", "{89337EB9-A29B-4066-BADC-A0ACBD67EF47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{131464AB-4638-42B2-9D0C-06416C429707}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{131464AB-4638-42B2-9D0C-06416C429707}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{131464AB-4638-42B2-9D0C-06416C429707}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89337EB9-A29B-4066-BADC-A0ACBD67EF47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89337EB9-A29B-4066-BADC-A0ACBD67EF47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89337EB9-A29B-4066-BADC-A0ACBD67EF47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89337EB9-A29B-4066-BADC-A0ACBD67EF47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
