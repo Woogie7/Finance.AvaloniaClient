@@ -14,9 +14,10 @@ namespace Finance.AvaloniaClient.Service
     {
         public static void AddCommonServices(this IServiceCollection collection)
         {
+            collection.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001/") });
+
             collection.AddTransient<MainViewModel>();
             collection.AddScoped<IIncomeApiService, IncomeApiService>();
-            collection.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001/") });
         }
     }
 }

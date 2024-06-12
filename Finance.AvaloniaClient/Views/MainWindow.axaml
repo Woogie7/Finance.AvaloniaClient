@@ -37,7 +37,8 @@
 
 			<Border Grid.Column="2">
 				<lvc:CartesianChart
-					Series="{Binding Series}">
+					Series="{Binding Series}"
+					XAxes="{Binding XAxes}">
 				</lvc:CartesianChart>
 			</Border>
 
