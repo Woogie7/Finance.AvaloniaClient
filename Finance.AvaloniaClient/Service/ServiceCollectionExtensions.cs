@@ -18,6 +18,7 @@ namespace Finance.AvaloniaClient.Service
 
             collection.AddTransient<MainViewModel>();
             collection.AddScoped<IIncomeApiService, IncomeApiService>();
+            collection.AddScoped<IExpenseApiService, ExpenseApiService>();
         }
     }
 }

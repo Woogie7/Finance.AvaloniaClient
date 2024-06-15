@@ -31,16 +31,22 @@
 
 			<StackPanel Grid.Column="1" Width="120" Background="BlueViolet">
 				<TextBlock Text="{Binding Income}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16"/>
-				<TextBlock Text="{Binding Expenses}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16"/>
+				<TextBlock Text="{Binding Expense}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16"/>
 				<TextBlock Text="{Binding Savings}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16"/>
 			</StackPanel>
 
-			<Border Grid.Column="2">
-				<lvc:CartesianChart
-					Series="{Binding Series}"
-					XAxes="{Binding XAxes}">
+			<Grid Grid.Column="2" RowDefinitions="*, Auto">
+				<lvc:CartesianChart Grid.Row="0"
+						Series="{Binding Series}"
+						XAxes="{Binding XAxes}">
 				</lvc:CartesianChart>
-			</Border>
+				<Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto"  Height="50" Background="Black">
+					<Button Grid.Column="0"  Content="&lt;" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10"/>
+					<TextBlock Grid.Column="1" Text="{Binding CurrentMonth}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" FontSize="16"/>
+					<Button Grid.Column="2" Command="{Binding NextMonthCommand}" Content="&gt;" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10"/>
+				</Grid>
+			</Grid>
+			
 
 		</Grid>
 

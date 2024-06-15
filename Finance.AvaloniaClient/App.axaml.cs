@@ -41,7 +41,7 @@ public partial class App : Avalonia.Application
 
     private async void InitializeViewModelAsync(object view, IServiceProvider services)
     {
-        var vm = await MainViewModel.CreateAsync(services.GetRequiredService<IIncomeApiService>());
+        var vm = await MainViewModel.CreateAsync(services.GetRequiredService<IIncomeApiService>(), services.GetRequiredService<IExpenseApiService>());
 
         if (view is MainWindow mainWindow)
         {

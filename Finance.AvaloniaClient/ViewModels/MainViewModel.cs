@@ -1,12 +1,17 @@
 ﻿using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Finance.Application.DTOs;
+using Finance.Application.DTOs.DtoExpense;
+using Finance.Application.DTOs.Income;
 using Finance.Application.Interface;
 using Finance.AvaloniaClient.Service;
 using Finance.Domain.Entities;
 using LiveChartsCore;
 using LiveChartsCore.Drawing;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,43 +24,64 @@ namespace Finance.AvaloniaClient.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly IIncomeApiService _incomeApiService;
+    private readonly IExpenseApiService _expenseApiService;
 
     [ObservableProperty]
     private string _buldTitle = "Привет";
     [ObservableProperty]
     private decimal _income;
     [ObservableProperty]
-    private decimal _expenses = 25000.00m;
+    private decimal _expense;
+    [ObservableProperty]
+    private int _currentMonth = DateTime.Now.Month;
 
     private ObservableCollection<IncomeDTO> Incomes { get; set; }
+    private ObservableCollection<ExpenseDto> Expenses { get; set; }
 
 
     public ISeries[] Series { get; set; }
     public Axis[] XAxes { get; set; }
 
-    public MainViewModel(IIncomeApiService incomeApiService)
+    public MainViewModel(IIncomeApiService incomeApiService, IExpenseApiService expenseApiService)
     {
         _incomeApiService = incomeApiService;
+        _expenseApiService = expenseApiService;
         Incomes = new ObservableCollection<IncomeDTO>();
+        Expenses = new ObservableCollection<ExpenseDto>();
         Series = new ISeries[] { };
-        XAxes = new Axis[] { }; // Initialize XAxes with empty array
+        XAxes = new Axis[] { };
     }
-    public static async Task<MainViewModel> CreateAsync(IIncomeApiService apiService)
+    public static async Task<MainViewModel> CreateAsync(IIncomeApiService apiService, IExpenseApiService expenseApiService)
     {
-        var instance = new MainViewModel(apiService);
+        var instance = new MainViewModel(apiService, expenseApiService);
         await instance.InitializeAsync();
         return instance;
     }
     public async Task InitializeAsync()
     {
         await LoadIncome();
-        Income = GetTotalIncomeForCurrentMonth();
+        await LoadExpenses();
+        GetTotalIncomeForCurrentMonth();
         UpdateSeries();
+    }
+    public async Task LoadExpenses()
+    {
+        Expenses.Clear();
+        var allExpense = await _expenseApiService.GetExpenseAsync();
+
+        allExpense = allExpense.Where(i => i.Date.Month == CurrentMonth);
+
+        foreach (var expense in allExpense)
+        {
+            Expenses.Add(expense);
+        }
     }
     public async Task LoadIncome()
     {
         Incomes.Clear();
         var allIncome = await _incomeApiService.GetIncomesAsync();
+
+        allIncome = allIncome.Where(i => i.Date.Month == CurrentMonth);
 
         foreach (var income in allIncome)
         {
@@ -63,32 +89,23 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    public decimal GetTotalIncomeForCurrentMonth()
+    public void GetTotalIncomeForCurrentMonth()
     {
-        DateOnly firstDayOfMonth = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 1);
-        DateOnly lastDayOfMonth = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
-
-        var i = Incomes
-            .Sum(i => i.Amount);
-
-        return i;
+        Income =  Incomes.Sum(i => i.Amount);
+        Expense = Expenses.Sum(e => e.Amount);
     }
     private void UpdateSeries()
     {
-        // Group incomes by date and order by date
         var groupedIncomes = Incomes
             .GroupBy(i => i.Date)
             .OrderBy(g => g.Key)
             .Select(g => new { Date = g.Key, TotalAmount = g.Sum(i => i.Amount) })
             .ToList();
 
-        // Extract values for the ColumnSeries
-        var values = groupedIncomes.Select(g => (double)g.TotalAmount).ToArray();
+        var values = groupedIncomes.Select(g => (double)g.TotalAmount).ToArray();   
 
-        // Create labels for X axis
-        var dateLabels = groupedIncomes.Select(g => g.Date.ToString("yyyy-MM-dd")).ToArray();
+        var dateLabels = groupedIncomes.Select(g => g.Date.ToString("dd-MM-yy")).ToArray();
 
-        // Update the Series property
         Series = new ISeries[]
         {
             new ColumnSeries<double>
@@ -96,18 +113,14 @@ public partial class MainViewModel : ObservableObject
                 Values = values
             }
         };
-
-        // Update the XAxes property
         XAxes = new Axis[]
         {
             new Axis
             {
                 Labels = dateLabels,
-                LabelsRotation = 45, // Optional: Rotate labels for better readability
-                TextSize = 12,
-                Name = "Dates",
-                NamePadding = new Padding(10),
-                UnitWidth = 1 // Ensures each label corresponds to one data point
+                TextSize = 14,
+                LabelsPaint = new SolidColorPaint(SKColors.Black),
+                NamePadding = new Padding(5)
             }
         };
     }
