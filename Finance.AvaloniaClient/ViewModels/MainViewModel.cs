@@ -27,7 +27,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IExpenseApiService _expenseApiService;
 
     [ObservableProperty]
-    private string _buldTitle = "Привет";
+    private decimal _earnings;
     [ObservableProperty]
     private decimal _income;
     [ObservableProperty]
@@ -93,35 +93,65 @@ public partial class MainViewModel : ObservableObject
     {
         Income =  Incomes.Sum(i => i.Amount);
         Expense = Expenses.Sum(e => e.Amount);
+        Earnings = Income - Expense;
     }
     private void UpdateSeries()
     {
-        var groupedIncomes = Incomes
-            .GroupBy(i => i.Date)
-            .OrderBy(g => g.Key)
-            .Select(g => new { Date = g.Key, TotalAmount = g.Sum(i => i.Amount) })
-            .ToList();
+        var allDates = Incomes.Select(i => i.Date)
+                              .Concat(Expenses.Select(e => e.Date))
+                              .Distinct()
+                              .OrderBy(d => d)
+                              .ToList();
 
-        var values = groupedIncomes.Select(g => (double)g.TotalAmount).ToArray();   
+        var incomeByDate = Incomes.GroupBy(i => i.Date)
+                                  .ToDictionary(g => g.Key, g => g.Sum(i => i.Amount));
+        var expenseByDate = Expenses.GroupBy(e => e.Date)
+                                    .ToDictionary(g => g.Key, g => g.Sum(e => e.Amount));
 
-        var dateLabels = groupedIncomes.Select(g => g.Date.ToString("dd-MM-yy")).ToArray();
+        var valuesIncome = new List<double>();
+        var valuesExpense = new List<double>();
+        var earnings = new List<double>();
+
+        foreach (var date in allDates)
+        {
+            var income = incomeByDate.ContainsKey(date) ? (double)incomeByDate[date] : 0;
+            var expense = expenseByDate.ContainsKey(date) ? (double)expenseByDate[date] : 0;
+            valuesIncome.Add(income);
+            valuesExpense.Add(expense);
+            earnings.Add(income - expense);
+        }
+
+
+        var dateLabels = allDates.Select(d => d.ToString("dd")).ToArray();
 
         Series = new ISeries[]
         {
-            new ColumnSeries<double>
-            {
-                Values = values
-            }
+        new ColumnSeries<double>
+        {
+            Values = valuesIncome.ToArray(),
+            Name = "Доходы"
+        },
+        new ColumnSeries<double>
+        {
+            Values = valuesExpense.ToArray(),
+            Name = "Расходы"
+        },
+        new LineSeries<double>
+        {
+            Values = earnings.ToArray(),
+            Name = "Выручка"
+        }
         };
+
         XAxes = new Axis[]
         {
-            new Axis
-            {
-                Labels = dateLabels,
-                TextSize = 14,
-                LabelsPaint = new SolidColorPaint(SKColors.Black),
-                NamePadding = new Padding(5)
-            }
+        new Axis
+        {
+            Labels = dateLabels,
+            TextSize = 12,
+            LabelsPaint = new SolidColorPaint(SKColors.Black),
+            NamePadding = new Padding(5),
+        }
         };
     }
 }

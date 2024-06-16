@@ -30,11 +30,7 @@ public partial class App : Avalonia.Application
             desktop.MainWindow = new MainWindow();
             InitializeViewModelAsync(desktop.MainWindow, services);
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView();
-            InitializeViewModelAsync(singleViewPlatform.MainView, services);
-        }
+        
 
         base.OnFrameworkInitializationCompleted();
     }
@@ -46,10 +42,6 @@ public partial class App : Avalonia.Application
         if (view is MainWindow mainWindow)
         {
             mainWindow.DataContext = vm;
-        }
-        else if (view is MainView mainView)
-        {
-            mainView.DataContext = vm;
         }
     }
 }
