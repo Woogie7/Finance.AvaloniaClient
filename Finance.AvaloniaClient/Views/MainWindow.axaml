@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:Finance.AvaloniaClient.Views"
+        xmlns:vms="clr-namespace:Finance.AvaloniaClient.ViewModels;assembly=Finance.AvaloniaClient"
         xmlns:conv="clr-namespace:Finance.AvaloniaClient.Converter"
 		xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -11,62 +12,12 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Finance.AvaloniaClient">
 	<Window.Resources>
-		<conv:PositiveValueConverter x:Key="PositiveValueConverter" />
+		<ResourceDictionary>
+			<conv:PositiveValueConverter x:Key="PositiveValueConverter"/>
+		</ResourceDictionary>
 	</Window.Resources>
 	
 	<Grid RowDefinitions="Auto, *, Auto">
-
-		<!--Title bar-->
-		<Grid Grid.Row="0" Background="Orange" Height="40" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-			<Rectangle Grid.Column="0" Fill="Red" Width="40"/>
-			<Rectangle Grid.Column="1" Fill="Green" Width="40"/>
-			<TextBlock Text="{Binding BuldTitle}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" FontWeight="Black"/>
-			<Rectangle Grid.Column="3" Fill="Blue" Width="40"/>
-			<Rectangle Grid.Column="4" Fill="Yellow" Width="40"/>
-		</Grid>
-
-		<!--Main area-->
-		<Grid Grid.Row="1" Background="Gray" ColumnDefinitions="Auto, Auto, *">
-
-			<StackPanel Grid.Column="0" Width="130" Background="Purple">
-				<TextBlock Text="Доходы" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="16"/>
-				<TextBlock Grid.Column="0" Text="Расходы" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="16"/>
-				<TextBlock Text="Сбережения" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="16"/>
-			</StackPanel>
-
-			<StackPanel Grid.Column="1" Width="130" Background="BlueViolet">
-				<TextBlock Text="{Binding Income}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16"/>
-				<TextBlock Text="{Binding Expense}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16"/>
-				<TextBlock Text="{Binding Earnings}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" FontSize="16">
-					<TextBlock.Styles>
-						<Style Selector="TextBlock">
-							<Style.Setters>
-								<Setter Property="Foreground" Value="{Binding Earnings, Converter={StaticResource PositiveValueConverter}}"/>
-							</Style.Setters>
-						</Style>
-					</TextBlock.Styles>
-				</TextBlock>
-					
-			</StackPanel>
-
-			<Grid Grid.Column="2" RowDefinitions="*, Auto">
-				<lvc:CartesianChart Grid.Row="0"
-						Series="{Binding Series}"
-						XAxes="{Binding XAxes}">
-				</lvc:CartesianChart>
-				<Grid Grid.Row="1">
-					<views:MonthNavigatorView/>
-				</Grid>
-			</Grid>
-			
-
-		</Grid>
-
-		<!--Bottom bar-->
-		<Grid Grid.Row="2" Background="White" ColumnDefinitions="Auto, Auto,* Auto, Auto, Auto" Margin="5">
-			<Button Content="нАЖМИ"/>
-		</Grid>
-
-
+		<views:LoginView/>
 	</Grid>
 </Window>

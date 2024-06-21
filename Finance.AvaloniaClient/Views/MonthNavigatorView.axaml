@@ -8,7 +8,7 @@
 	<Design.DataContext>
 		<vm:MonthNavigationViewModel/>
 	</Design.DataContext>
-	<Grid ColumnDefinitions="Auto, *, Auto"  Height="50" Background="Black">
+	<Grid ColumnDefinitions="Auto, *, Auto"  Height="50" Background="#463648">
 		<Button Grid.Column="0" Command="{Binding PreviousMonth}" Content="&lt;" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10"/>
 		<TextBlock Grid.Column="1" Text="{Binding CurrentMonth}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" FontSize="16"/>
 		<Button Grid.Column="2" Command="{Binding NextMonth}" Content="&gt;" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10"/>

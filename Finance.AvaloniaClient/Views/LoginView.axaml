@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Finance.AvaloniaClient.ViewModels;assembly=Finance.AvaloniaClient"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Finance.AvaloniaClient.Views.LoginView">
+	<UserControl.DataContext>
+		<vm:LoginViewModel/>
+	</UserControl.DataContext>
+	
+	<Grid Margin="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Border Name="LogInBorder" BorderThickness="3" BorderBrush="Orange" CornerRadius="5" Padding="20">
+			<StackPanel>
+				<TextBlock Text="Вход" HorizontalAlignment="Center" FontSize="28"/>
+				<DockPanel>
+					<TextBlock Text="Email: " Width="100" Margin="10" FontSize="24"/>
+					<TextBox Name="LogLoginBox" Width="250" Margin="10 10 10 25" FontSize="24"
+                             MaxLength="50" Text="{Binding Email}"/>
+				</DockPanel>
+				<DockPanel>
+					<TextBlock Text="Пароль: " Width="100" Margin="10" FontSize="24"/>
+					<TextBox Name="LogPasswordBox" Width="250" Margin="10 10 10 25" FontSize="24"
+                                 MaxLength="50" Text="{Binding PasswordHash}"/>
+				</DockPanel>
+
+				<TextBlock HorizontalAlignment="Center" FontSize="12">
+						Зарегистрироваться
+				</TextBlock>
+
+				<TextBlock Text="{Binding Message}" Foreground="Red" HorizontalAlignment="Center" FontSize="12"/>
+				
+				<Button Content="Вход" Command="{Binding LoginCommand}"
+                     Name="EnterButton" IsDefault="True" 
+                     HorizontalAlignment="Center" Width="75" Height="30" Margin="10"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+</UserControl>
