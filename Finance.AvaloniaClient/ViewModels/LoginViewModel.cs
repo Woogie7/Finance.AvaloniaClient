@@ -1,17 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Finance.Application.DTOs.UserDto;
+using Finance.Application.Interface;
+using Finance.AvaloniaClient.Service.Store;
+using Finance.Domain.Exceptions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Finance.AvaloniaClient.ViewModels;
 
 public partial class LoginViewModel : ObservableValidator
 {
-    public ICommand RegisterNavigationCommand { get; }
-    public ICommand PizzaNavigationCommand { get; }
+    private readonly IAuthenticator _authenticator;
+    private readonly NavigationService<FinanceViewModel> _navigationServiceFinance;
 
     [ObservableProperty]
     private UserDto _user;
@@ -29,17 +33,15 @@ public partial class LoginViewModel : ObservableValidator
     [StringLength(25, MinimumLength = 6, ErrorMessage ="Длина пароля должна быть не меньше 6 и не больше 25")]
     private string _passwordHash;
 
-    public LoginViewModel()
+    public LoginViewModel(IAuthenticator authenticator, NavigationService<FinanceViewModel> navigationServiceFinance)
     {
         User = new UserDto();
-
-        //LoginCommand = new LoginCommand(_authenticator, this);
-        //PizzaNavigationCommand = new NavigateCommand<PizzaViewModel>(navigationServicePizza);
-        //RegisterNavigationCommand = new NavigateCommand<RegisterViewModel>(navigationServiceReg);
+        _authenticator = authenticator;
+        _navigationServiceFinance = navigationServiceFinance;
     }
 
     [RelayCommand]
-    public void LoginCommand()
+    public async Task LoginCommand()
     {
         ValidateAllProperties();
         if (!HasErrors)
@@ -48,21 +50,31 @@ public partial class LoginViewModel : ObservableValidator
 
             try
             {
-                var succes = await _authenticator.Login(_loginViewModel.User);
+                User.Email = Email;
+                User.PasswordHash = PasswordHash;
 
-                _loginViewModel.PizzaNavigationCommand.Execute(succes);
+                var loginedUser = await _authenticator.Login(User);
+
+                if (loginedUser != null)
+                {
+                    _navigationServiceFinance.Navigate();
+                }
+                else
+                {
+                    Message = "Ошибка входа";
+                }
             }
             catch (UserNotFoundException)
             {
-                _loginViewModel.ErrorMessage = "Пользователь не найден";
+                Message = "Пользователь не найден";
             }
             catch (InvalidPasswordException)
             {
-                _loginViewModel.ErrorMessage = "Не правильный пароль";
+                Message = "Не правильный пароль";
             }
             catch (Exception)
             {
-                _loginViewModel.ErrorMessage = "Ошибка входа";
+                Message = "Ошибка входа";
             }
         }
         else

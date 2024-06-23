@@ -4,11 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Finance.AvaloniaClient.Views
 {
-    public partial class LoginView : UserControl
+    public partial class FinanceView : UserControl
     {
-        public LoginView()
+        public FinanceView()
         {
             InitializeComponent();
+            DataContext = ((App)Avalonia.Application.Current).Services.GetRequiredService<FinanceViewModel>();
         }
     }
 }

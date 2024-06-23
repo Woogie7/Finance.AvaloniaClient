@@ -11,6 +11,13 @@ namespace Finance.AvaloniaClient.Service
 {
     internal class Authenticator : ObservableObject, IAuthenticator
     {
+        private readonly IAuthenticationService _authenticationService;
+
+        public Authenticator(IAuthenticationService authenticationService)
+        {
+            _authenticationService = authenticationService;
+        }
+
         private UserDto _currentUser;
 
         public UserDto CurrentUser
@@ -39,7 +46,7 @@ namespace Finance.AvaloniaClient.Service
 
         public async Task Register(CreateUserDto userDto)
         {
-            return await _authenticationService.Register(userDto);
+            await _authenticationService.Register(userDto);
         }
     }
 }

@@ -4,11 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Finance.AvaloniaClient.ViewModels;assembly=Finance.AvaloniaClient"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Finance.AvaloniaClient.Views.LoginView">
-	<UserControl.DataContext>
-		<vm:LoginViewModel/>
-	</UserControl.DataContext>
-	
+             x:Class="Finance.AvaloniaClient.Views.LoginView">	
 	<Grid Margin="50" HorizontalAlignment="Center" VerticalAlignment="Center">
 		<Border Name="LogInBorder" BorderThickness="3" BorderBrush="Orange" CornerRadius="5" Padding="20">
 			<StackPanel>

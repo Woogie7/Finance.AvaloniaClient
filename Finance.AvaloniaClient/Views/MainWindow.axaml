@@ -5,19 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:Finance.AvaloniaClient.Views"
         xmlns:vms="clr-namespace:Finance.AvaloniaClient.ViewModels;assembly=Finance.AvaloniaClient"
-        xmlns:conv="clr-namespace:Finance.AvaloniaClient.Converter"
-		xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Finance.AvaloniaClient.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Finance.AvaloniaClient">
-	<Window.Resources>
-		<ResourceDictionary>
-			<conv:PositiveValueConverter x:Key="PositiveValueConverter"/>
-		</ResourceDictionary>
-	</Window.Resources>
-	
-	<Grid RowDefinitions="Auto, *, Auto">
-		<views:LoginView/>
-	</Grid>
+	<Window.DataTemplates>
+		<DataTemplate DataType="vms:LoginViewModel">
+			<views:LoginView/>
+		</DataTemplate>
+		<DataTemplate DataType="vms:FinanceViewModel">
+			<views:FinanceView/>
+		</DataTemplate>
+	</Window.DataTemplates>
+	<Grid>
+		<ContentControl Content="{Binding CurrentViewModel}"/>
+    </Grid>
 </Window>

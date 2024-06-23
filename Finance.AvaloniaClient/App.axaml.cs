@@ -3,16 +3,17 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Finance.Application.Interface;
 using Finance.AvaloniaClient.Service;
+using Finance.AvaloniaClient.Service.Store;
 using Finance.AvaloniaClient.ViewModels;
 using Finance.AvaloniaClient.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading.Tasks;
 
 namespace Finance.AvaloniaClient;
 
 public partial class App : Avalonia.Application
 {
+    public IServiceProvider Services { get; private set; }
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -23,26 +24,21 @@ public partial class App : Avalonia.Application
         var collection = new ServiceCollection();
         collection.AddCommonServices();
 
-        var services = collection.BuildServiceProvider();
+        Services = collection.BuildServiceProvider();
 
+        var navigationService = Services.GetRequiredService<NavigationService<LoginViewModel>>();
+        navigationService.Navigate();
+
+        var vm = Services.GetRequiredService<MainViewModel>();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
-            InitializeViewModelAsync(desktop.MainWindow, services);
+            desktop.MainWindow = new MainWindow
+            {
+                DataContext = vm,
+            };
         }
-        
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private async void InitializeViewModelAsync(object view, IServiceProvider services)
-    {
-        var vm = await MainViewModel.CreateAsync(services.GetRequiredService<IIncomeApiService>(), services.GetRequiredService<IExpenseApiService>());
-
-        if (view is MainWindow mainWindow)
-        {
-            mainWindow.DataContext = vm;
-        }
     }
 }
 
