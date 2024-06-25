@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Finance.AvaloniaClient.Views.AddExpenseeView">
+	<Grid Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Border BorderThickness="4" BorderBrush="#463648" CornerRadius="5" Padding="15">
+			<StackPanel>
+				<TextBlock Text="Добавить расход" HorizontalAlignment="Center" FontSize="24" Margin="0 0 0 15"/>
+
+				<DockPanel Margin="0 0 0 10">
+					<TextBlock Text="Сумма: " Width="80" FontSize="20" VerticalAlignment="Center"/>
+					<TextBox Width="300" FontSize="20" MaxLength="50" Text="{Binding Amount}" Margin="10 10 10 25"/>
+				</DockPanel>
+
+				<DockPanel Margin="0 0 0 10">
+					<TextBlock Text="Валюта: " Width="80" FontSize="20" VerticalAlignment="Center"/>
+					<ComboBox ItemsSource="{Binding Currencies}" Width="300" FontSize="20" Margin="10 10 10 25"
+							  DisplayMemberBinding="{Binding CurrencyName}" SelectedItem="{Binding SelectedCurrency}"/>
+				</DockPanel>
+
+				<DockPanel Margin="0 0 0 10">
+					<TextBlock Text="Дата: " Width="80" FontSize="20" VerticalAlignment="Center"/>
+					<DatePicker Width="300" Margin="10 10 10 25" FontSize="20" SelectedDate="{Binding SelectedDate}"/>
+				</DockPanel>
+
+				<DockPanel Margin="0 0 0 10">
+					<TextBlock Text="Категория: " Width="100" FontSize="20" VerticalAlignment="Center"/>
+					<ComboBox ItemsSource="{Binding Categories}" Width="300" FontSize="20" Margin="10 10 10 25"
+							  DisplayMemberBinding="{Binding CategoryExpenseName}" SelectedItem="{Binding SelectedCategory}"/>
+				</DockPanel>
+
+				<TextBlock Text="{Binding Message}" Foreground="Red" HorizontalAlignment="Center" FontSize="12" Margin="0 0 0 10"/>
+
+				<DockPanel HorizontalAlignment="Center">
+					<Button Content="Вход" Command="{Binding AddNewExpenseCommand}"
+						Margin="10" Width="75" Height="30"/>
+					<Button Content="Назад" Command="{Binding NavigateFinanceCommand}"
+						Margin="10" Width="75" Height="30"/>
+				</DockPanel>
+			</StackPanel>
+		</Border>
+	</Grid>
+</UserControl>

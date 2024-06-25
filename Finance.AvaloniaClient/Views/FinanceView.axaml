@@ -15,15 +15,16 @@
 
 		<!--Title bar-->
 		<Grid Grid.Row="0" Background="Orange" Height="40" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-			<Rectangle Grid.Column="0" Fill="Red" Width="40"/>
-			<Rectangle Grid.Column="1" Fill="Green" Width="40"/>
+			<Button Grid.Column="0" Content="Добавить доход" Margin="5" Background="Black" Foreground="Wheat" Command="{Binding NavigateAddIncomeCommand}"/>
+			<Button Grid.Column="1" Content="Добавить расход" Margin="5" Background="Black" Foreground="Wheat" Command="{Binding NavigateAddExpenseCommand}"/>
 			<TextBlock Text="{Binding BuldTitle}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" FontWeight="Black"/>
 			<Rectangle Grid.Column="3" Fill="Blue" Width="40"/>
 			<Rectangle Grid.Column="4" Fill="Yellow" Width="40"/>
 		</Grid>
 
 		<!--Main area-->
-		<Grid Grid.Row="1" Background="Gray" ColumnDefinitions="Auto, Auto, *">
+		<Grid Grid.Row="1" Name="mainArea" x:Name="mainArea"
+			  Background="Gray" ColumnDefinitions="Auto, Auto, *">
 
 			<StackPanel Grid.Column="0" Width="130" Background="Purple">
 				<TextBlock Text="Доходы" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="16"/>
@@ -48,8 +49,8 @@
 
 			<Grid Grid.Column="2" RowDefinitions="*, Auto">
 				<lvc:CartesianChart Grid.Row="0"
-						Series="{Binding Series}"
-						XAxes="{Binding XAxes}">
+					Series="{Binding Series}"
+					XAxes="{Binding XAxes}">
 				</lvc:CartesianChart>
 				<Grid Grid.Row="1">
 					<views:MonthNavigatorView/>
@@ -61,7 +62,8 @@
 
 		<!--Bottom bar-->
 		<Grid Grid.Row="2" Background="White" ColumnDefinitions="Auto, Auto,* Auto, Auto, Auto" Margin="5">
-			<Button Content="нАЖМИ"/>
+			<Button Grid.Column="0" Content="Обновить" Command="{Binding UpdateSeriesCommand}" Margin="0 0 20 0"/>
+			<Button Grid.Column="1" Content="PDF" Command="{Binding CreatePdfCommand}"/>
 		</Grid>
 	</Grid>
 </UserControl>

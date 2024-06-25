@@ -16,6 +16,12 @@
 		<DataTemplate DataType="vms:FinanceViewModel">
 			<views:FinanceView/>
 		</DataTemplate>
+		<DataTemplate DataType="vms:AddIncomeViewModel">
+			<views:AddIncomeView/>
+		</DataTemplate>
+		<DataTemplate DataType="vms:AddExpenseViewModel">
+			<views:AddExpenseeView/>
+		</DataTemplate>
 	</Window.DataTemplates>
 	<Grid>
 		<ContentControl Content="{Binding CurrentViewModel}"/>

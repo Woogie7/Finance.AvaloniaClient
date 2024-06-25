@@ -1,4 +1,5 @@
 ﻿using Finance.Application.Interface;
+using Finance.AvaloniaClient.Service;
 using Finance.AvaloniaClient.Service.Store;
 using Finance.AvaloniaClient.ViewModels;
 using Finance.AvaloniaClient.Views;
@@ -11,7 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Finance.AvaloniaClient.Service
+namespace Finance.AvaloniaClient.HostBulder
 {
     public static class ServiceCollectionExtensions
     {
@@ -24,24 +25,15 @@ namespace Finance.AvaloniaClient.Service
 
             collection.AddScoped<IIncomeApiService, IncomeApiService>();
             collection.AddScoped<IExpenseApiService, ExpenseApiService>();
+            collection.AddScoped<ICategoryIncomeApiInterface, CategoryIncomeApiService>();
+            collection.AddScoped<ICategoryExpenseApiInterface, CategoryExpenseApiService>();
+            collection.AddScoped<ICurrencyApiInterface, CurrencyApiService>();
             collection.AddSingleton<IAuthenticator, Authenticator>();
             collection.AddSingleton<IAuthenticationService, AuthenticationApiService>();
 
-            collection.AddTransient<FinanceView>();
             collection.AddTransient<MainWindow>();
 
             collection.AddSingleton<NavigationStore>();
-
-
-            collection.AddTransient<LoginView>();
-            collection.AddTransient<LoginViewModel>();
-            collection.AddSingleton<Func<LoginViewModel>>(s => () => s.GetRequiredService<LoginViewModel>());
-            collection.AddSingleton<NavigationService<LoginViewModel>>();
-
-            collection.AddTransient<FinanceView>();
-            collection.AddTransient<FinanceViewModel>();
-            collection.AddSingleton<Func<FinanceViewModel>>(s => () => s.GetRequiredService<FinanceViewModel>());
-            collection.AddSingleton<NavigationService<FinanceViewModel>>();
         }
     }
 }

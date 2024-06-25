@@ -14,6 +14,17 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
+using System.Runtime.CompilerServices;
+using LiveChartsCore.Defaults;
+using DynamicData;
+using Finance.AvaloniaClient.Service.Store;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using System.IO;
+using LiveChartsCore.SkiaSharpView.Avalonia;
+using System.Drawing;
+using Avalonia.Controls;
 
 namespace Finance.AvaloniaClient.ViewModels;
 
@@ -21,10 +32,12 @@ public partial class FinanceViewModel : ObservableObject
 {
     private readonly IIncomeApiService _incomeApiService;
     private readonly IExpenseApiService _expenseApiService;
-
+    private readonly NavigationService<AddIncomeViewModel> _navigationAddIncome;
+    private readonly NavigationService<AddExpenseViewModel> _navigationAddExpense;
     [ObservableProperty]
     private decimal _earnings;
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Series))]
     private decimal _income;
     [ObservableProperty]
     private decimal _expense;
@@ -34,32 +47,47 @@ public partial class FinanceViewModel : ObservableObject
     private ObservableCollection<IncomeDTO> Incomes { get; set; }
     private ObservableCollection<ExpenseDto> Expenses { get; set; }
 
+    [ObservableProperty]
+    private ISeries[] _series;
 
-    public ISeries[] Series { get; set; }
-    public Axis[] XAxes { get; set; }
+    [ObservableProperty]
+    private Axis[] _xAxes;
 
-    public FinanceViewModel(IIncomeApiService incomeApiService, IExpenseApiService expenseApiService)
+    private FinanceViewModel(IIncomeApiService incomeApiService, IExpenseApiService expenseApiService, NavigationService<AddIncomeViewModel> navigationAddIncome, NavigationService<AddExpenseViewModel> navigationAddExpense)
     {
         _incomeApiService = incomeApiService;
         _expenseApiService = expenseApiService;
+        _navigationAddIncome = navigationAddIncome;
         Incomes = new ObservableCollection<IncomeDTO>();
         Expenses = new ObservableCollection<ExpenseDto>();
         Series = new ISeries[] { };
         XAxes = new Axis[] { };
+
+
+        InitializeCommand.Execute(null);
+        _navigationAddExpense = navigationAddExpense;
     }
-    public static async Task<FinanceViewModel> CreateAsync(IIncomeApiService apiService, IExpenseApiService expenseApiService)
+
+    public static FinanceViewModel CreateAsync(IIncomeApiService apiService, IExpenseApiService expenseApiService, 
+        NavigationService<AddIncomeViewModel> navigationAddIncome, NavigationService<AddExpenseViewModel> navigationAddExpense)
     {
-        var instance = new FinanceViewModel(apiService, expenseApiService);
-        await instance.InitializeAsync();
+        var instance = new FinanceViewModel(apiService, expenseApiService, navigationAddIncome, navigationAddExpense);
+
+        instance.InitializeCommand.Execute(null);
+
+        instance.UpdateSeriesCommand.Execute(null);
+
         return instance;
     }
+
+    [RelayCommand]
     public async Task InitializeAsync()
     {
-        // await LoadIncome();
-        // await LoadExpenses();
+        await LoadIncome();
+        await LoadExpenses();
         GetTotalIncomeForCurrentMonth();
-        UpdateSeries();
     }
+    
     public async Task LoadExpenses()
     {
         Expenses.Clear();
@@ -72,6 +100,7 @@ public partial class FinanceViewModel : ObservableObject
             Expenses.Add(expense);
         }
     }
+
     public async Task LoadIncome()
     {
         Incomes.Clear();
@@ -84,6 +113,18 @@ public partial class FinanceViewModel : ObservableObject
             Incomes.Add(income);
         }
     }
+    
+    [RelayCommand]
+    private void NavigateAddIncome()
+    {
+        _navigationAddIncome.Navigate();
+    }
+
+    [RelayCommand]
+    private void NavigateAddExpense()
+    {
+        _navigationAddExpense.Navigate();
+    }
 
     public void GetTotalIncomeForCurrentMonth()
     {
@@ -91,6 +132,36 @@ public partial class FinanceViewModel : ObservableObject
         Expense = Expenses.Sum(e => e.Amount);
         Earnings = Income - Expense;
     }
+
+    partial void OnExpenseChanged(decimal value)
+    {
+        UpdateSeriesCommand.Execute(null);
+    }
+
+    [RelayCommand]
+    private void CreatePdf()
+    {
+        PdfDocument document = new PdfDocument();
+        document.Info.Title = "Финансы";
+
+        PdfPage page = document.AddPage();
+        XGraphics gfx = XGraphics.FromPdfPage(page);
+
+        XFont font = new XFont("Verdana", 20);
+        gfx.DrawString("Финансы", font, XBrushes.Black, new XRect(0, 0, page.Width, 40), XStringFormats.TopCenter);
+
+        // Рисование текста
+        font = new XFont("Verdana", 12);
+        gfx.DrawString($"Доходы: {Income:C}", font, XBrushes.Black, new XRect(20, 60, page.Width, 20), XStringFormats.TopLeft);
+        gfx.DrawString($"Расходы: {Expense:C}", font, XBrushes.Black, new XRect(20, 80, page.Width, 20), XStringFormats.TopLeft);
+        gfx.DrawString($"Сбережения: {Earnings:C}", font, XBrushes.Black, new XRect(20, 100, page.Width, 20), XStringFormats.TopLeft);
+
+        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filename = Path.Combine(desktopPath, "123.pdf");
+        document.Save(filename);
+    }
+
+    [RelayCommand]
     private void UpdateSeries()
     {
         var allDates = Incomes.Select(i => i.Date)
@@ -150,4 +221,5 @@ public partial class FinanceViewModel : ObservableObject
         }
         };
     }
+
 }

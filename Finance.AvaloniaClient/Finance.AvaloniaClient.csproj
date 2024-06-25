@@ -21,10 +21,17 @@
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="PDFsharp" Version="6.1.0" />
 	  
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Finance\Finacne.Application\Finance.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\AddIncomeView.axaml.cs">
+      <DependentUpon>AddIncomeView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

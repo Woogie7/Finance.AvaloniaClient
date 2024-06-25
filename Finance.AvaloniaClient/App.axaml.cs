@@ -2,7 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Finance.Application.Interface;
-using Finance.AvaloniaClient.Service;
+using Finance.AvaloniaClient.HostBulder;
 using Finance.AvaloniaClient.Service.Store;
 using Finance.AvaloniaClient.ViewModels;
 using Finance.AvaloniaClient.Views;
@@ -23,6 +23,7 @@ public partial class App : Avalonia.Application
     {
         var collection = new ServiceCollection();
         collection.AddCommonServices();
+        collection.AddViewModels();
 
         Services = collection.BuildServiceProvider();
 
